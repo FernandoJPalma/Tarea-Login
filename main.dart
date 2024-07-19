@@ -123,14 +123,30 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Pantalla Principal'),
+        centerTitle: true,
+        backgroundColor: Colors.grey,
       ),
-      body: Center(
-        child: Text('Bienvenido, $email'),
+      body:Scaffold(
+        backgroundColor: Colors.grey,
+        body: Center(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [ 
+              const CircleAvatar(
+                radius: 60,
+                backgroundImage: NetworkImage(
+                'https://steamuserimages-a.akamaihd.net/ugc/995765700398603617/EE2775B6B2ACCC7A243FA5024FAD9003A2EDA84D/?imw=637&imh=358&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true'),
+              ),
+                const Text('                '),
+                Text('Estudiante', style: TextStyle(fontSize: 25)),
+                Text('Bienvenido, $email'),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
-
 class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
