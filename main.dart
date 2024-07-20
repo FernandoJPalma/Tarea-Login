@@ -27,13 +27,13 @@ class LoginScreen extends StatelessWidget {
       final email = _emailController.text;
       final password = _passwordController.text;
       if (email == 'fjpalma@unah.hn' && password == '20222030080') {
-        // Navegar a la pantalla principal
+        
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen(email: email)),
         );
       } else {
-        // Mostrar un mensaje de error
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Credenciales incorrectas')),
         );
@@ -45,8 +45,9 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Inicio de Sesión')),
-        leading: Container(), // Esto evita que se muestre el botón de retroceso
+        title: Text('Inicio de Sesión'),
+          centerTitle: true,
+        leading: Container(), 
         backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         elevation: 30,
         foregroundColor: Colors.white,
@@ -124,16 +125,16 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Pantalla Principal'),
         centerTitle: true,
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.white,
       ),
       body:Scaffold(
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.white,
         body: Center(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [ 
               const CircleAvatar(
-                radius: 60,
+                radius: 100,
                 backgroundImage: NetworkImage(
                 'https://steamuserimages-a.akamaihd.net/ugc/995765700398603617/EE2775B6B2ACCC7A243FA5024FAD9003A2EDA84D/?imw=637&imh=358&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true'),
               ),
@@ -147,15 +148,129 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-class RegisterScreen extends StatelessWidget {
+
+class RegisterScreen extends StatefulWidget {
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
+  void _register() {
+    if (_formKey.currentState!.validate()) {
+      final name = _nameController.text;
+      final email = _emailController.text;
+      final phone = _phoneController.text;
+      final password = _passwordController.text;
+      final confirmPassword = _confirmPasswordController.text;
+
+      if (password == confirmPassword) {
+        print('Nombre: $name');
+        print('Correo: $email');
+        print('Teléfono: $phone');
+        print('Contraseña: $password');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registro exitoso')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Las contraseñas no coinciden')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Registro'),
       ),
-      body: Center(
-        child: Text('Pantalla de Registro'),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: <Widget>[
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(labelText: 'Nombre'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingresa tu nombre';
+                  }
+                  if (value.length < 3 || value.length > 10) {
+                    return 'El nombre debe tener entre 3 y 10 caracteres';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(labelText: 'Correo'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingresa tu correo';
+                  }
+                  if (!RegExp(r'^[^@]+@[^@]+\.(edu\.hn)$').hasMatch(value)) {
+                    return 'Ingresa un correo válido institucional (Ejem: fjpalma@unah.edu.hn)';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _phoneController,
+                decoration: InputDecoration(labelText: 'Teléfono'),
+                keyboardType: TextInputType.phone,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingresa tu teléfono';
+                  }
+                  if (!RegExp(r'^[39]\d{7}$').hasMatch(value)) {
+                    return 'El teléfono debe comenzar con 3 o 9 y tener 8 dígitos';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _passwordController,
+                decoration: InputDecoration(labelText: 'Contraseña'),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingresa tu contraseña';
+                  }
+                  if (!RegExp(r'^(?=.*[A-Z])(?=.*\W).{8,}$').hasMatch(value)) {
+                    return 'La contraseña debe tener al menos 8 caracteres, incluyendo una mayúscula y un carácter especial';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _confirmPasswordController,
+                decoration: InputDecoration(labelText: 'Confirmar Contraseña'),
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor confirma tu contraseña';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: _register,
+                child: Text('Registrarse'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
